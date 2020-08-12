@@ -5,19 +5,29 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.websocket.chat.model.ChatMessage;
+import com.websocket.chat.model.ChatRoom;
+import com.websocket.chat.service.ChatService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class CustomWebSocketHandler extends TextWebSocketHandler {
 
+	private final ObjectMapper objectMapper;
+	private final ChatService chatService;
+
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		
 		String payload = message.getPayload();
 		log.info("payload {}", payload);
-		
-		TextMessage textMessage = new TextMessage("채팅 서버에 오신 것을 환영합니다.");
-		session.sendMessage(textMessage);
+
+		ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
+		ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
+		room.handleActions(session, chatMessage, chatService);
 	}
 }
