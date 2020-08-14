@@ -28,10 +28,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication()
-			.withUser("happydaddy").password("{noop}1234").roles("USER")
+			.withUser("user1").password("{noop}user1").roles("USER")
 		.and()
-			.withUser("angrydaddy").password("{noop}1234").roles("USER")
+			.withUser("user2").password("{noop}user2").roles("USER")
 		.and()
-			.withUser("guest").password("{noop}1234").roles("GUEST");
+			.withUser("guest1").password("{noop}guest1").roles("GUEST");
 	}
 }
